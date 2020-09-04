@@ -84,50 +84,12 @@ describe('Resource', () => {
     // Ideally the body would be a buffer, because of potential issues with
     // string re-encoding, since these strings are blank, it should be fine
     // but this is why iconv is throwing warnings.
-    it('throws an error if the content is not text', () => {
-      const response = {
-        headers: {
-          'content-type': 'foo',
-        },
-      };
-      const body = '';
-
-      assert.throws(() => {
-        Resource.generateDoc({ body, response });
-      }, /content does not appear to be text/i);
-    });
-
-    it('throws an error if the response has no Content-Type header', () => {
-      const response = {
-        headers: {},
-      };
-      const body = '';
-
-      // This assertion is more elaborate than the others to be sure that we're
-      // throwing an `Error` and not raising a runtime exception.
-      assert.throws(
-        () => {
-          Resource.generateDoc({ body, response });
-        },
-        err =>
-          err instanceof Error &&
-          /content does not appear to be text/i.test(err)
-      );
-    });
-
     it('throws an error if the content has no children', () => {
       // jquery's parser won't work this way, and this is
       // an outside case
       if (!cheerio.browser) {
-        const response = {
-          headers: {
-            'content-type': 'html',
-          },
-        };
-        const body = '';
-
         assert.throws(() => {
-          Resource.generateDoc({ body, response });
+          Resource.generateDoc({ content: '', contentType: 'html' });
         }, /no children/i);
       }
     });
